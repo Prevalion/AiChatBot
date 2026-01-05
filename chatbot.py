@@ -1,18 +1,21 @@
+import os
 from tkinter import Tk, Entry, Text, Button, END, WORD
 from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 root = Tk()
-# talk with LLaMa
-
 
 def send():
     user_input = msg.get()
     client = OpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key="YOUR NVIDIA API KEY",  # get your key here : https://bit.ly/3X7LDNX
+        base_url="https://api.tokenfactory.nebius.com/v1/",
+        api_key=os.getenv("NEBIUS_API_KEY")
     )
     completion = client.chat.completions.create(
-        model="AI MODEL",
+        model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": user_input}],
         temperature=0.2,
         top_p=0.7,
