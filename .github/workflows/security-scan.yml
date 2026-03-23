@@ -1,0 +1,52 @@
+name: Security Vulnerability Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Run weekly on Mondays at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install pip-audit
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-audit
+
+    - name: Create filtered requirements (without tkinter)
+      run: |
+        grep -v tkinter requirements.txt > requirements_filtered.txt || true
+        cat requirements_filtered.txt
+
+    - name: Run pip-audit vulnerability scan
+      run: |
+        echo "Scanning for CVE vulnerabilities..."
+        pip-audit -r requirements_filtered.txt --desc
+
+    - name: Run pip-audit with JSON output
+      if: always()
+      run: |
+        pip-audit -r requirements_filtered.txt --format json > vulnerability-report.json
+        cat vulnerability-report.json
+
+    - name: Upload vulnerability report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: vulnerability-report
+        path: vulnerability-report.json
+        retention-days: 30
