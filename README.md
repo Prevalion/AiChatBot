@@ -1,5 +1,9 @@
 # AiChatBot
 My first project that involves interaction with AI using Using [Nvidia NIM API](https://bit.ly/3X7LDNX), that gives access to more some good AI language model.
+
+## Security Status
+✅ **No Known CVE Vulnerabilities** - See [CVE_REPORT.md](CVE_REPORT.md) for detailed security analysis.
+
 ## Steps:
 1. Clone, download or even use codespace.
 2. Install the requirements.txt by typing: pip install -r requirements.txt, it will do the job for you.
